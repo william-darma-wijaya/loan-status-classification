@@ -1,5 +1,6 @@
 import streamlit as st
 import joblib
+import pandas as pd
 
 # Load model
 model = joblib.load("savedPickle/model.pkl")
