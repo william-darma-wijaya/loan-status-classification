@@ -1,5 +1,3 @@
 import streamlit as st
 
-st.title('🎈 App Name')
-
-st.write('Hello world!')
+st.title('Loan Status Prediction')
