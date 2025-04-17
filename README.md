@@ -3,8 +3,8 @@
 This app predicts whether your loan will be approved or rejected.
 
 ## Demo App
-Click here to open the app 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://loan-status-classification.streamlit.app/)
+ 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://loan-status-classification.streamlit.app/) Click here to open the app
 
 ## GitHub Codespaces
 
