@@ -9,7 +9,6 @@ model = joblib.load("savedPickle/model.pkl")
 labelEncoders = joblib.load("savedPickle/label_encoders.pkl")
 ordinalEncoders = joblib.load("savedPickle/ordinal_encoders.pkl")
 
-# === Input Form ===
 def user_input_form():
     with st.form("loan_form"):
         age = st.number_input("Age", min_value=18, max_value=100, value=30)
@@ -18,7 +17,7 @@ def user_input_form():
         income = st.number_input("Income", min_value=0.0, value=50000.0)
         exp = st.number_input("Employment Experience (years)", min_value=0, value=5)
         home = st.selectbox("Home Ownership", ['RENT', 'OWN', 'MORTGAGE', 'OTHER'])
-        loan_amnt = st.number_input("Loan Amount", min_value=1000.0, value=15000.0)
+        loan_amnt = st.number_input("Loan Amount", min_value=5.0, value=300.0)
         intent = st.selectbox("Loan Intent", ['PERSONAL', 'EDUCATION', 'MEDICAL', 'VENTURE', 'HOMEIMPROVEMENT', 'DEBTCONSOLIDATION'])
         interest_rate = st.number_input("Interest Rate (%)", min_value=0.0, value=10.5)
         percent_income = st.number_input("Loan Percent Income", min_value=0.0, value=0.3)
@@ -26,7 +25,7 @@ def user_input_form():
         credit_score = st.number_input("Credit Score", min_value=300, max_value=850, value=700)
         prev_default = st.selectbox("Previous Loan Default?", ['No', 'Yes'])
 
-        submitted = st.form_submit_button("Prediksi!")
+        submitted = st.form_submit_button("Predict")
     
     if submitted:
         return {
@@ -47,32 +46,33 @@ def user_input_form():
     else:
         return None
 
-# === Prediksi ===
-def predict_loan(input_dict, model, ordinal_encoders, label_encoders):
+def predict_loan(input_dict):
     df = pd.DataFrame([input_dict])
 
     df["person_gender"] = df["person_gender"].replace({"male": "Male", "female": "Female", "fe male": "Female"})
 
-    df[["person_education", "previous_loan_defaults_on_file"]] = ordinal_encoders.transform(
+    df[["person_education", "previous_loan_defaults_on_file"]] = ordinalEncoders.transform(
         df[["person_education", "previous_loan_defaults_on_file"]]
     )
 
-    for col, le in label_encoders.items():
+    for col, le in labelEncoders.items():
         df[col] = le.transform(df[col])
 
     pred = model.predict(df)[0]
-    return "✅ Diterima" if pred == 1 else "❌ Ditolak"
+    return pred
 
-# === MAIN ===
 def main():
     st.title("📊 Loan Status Prediction App")
-    st.write("Masukin data calon peminjam, terus kita prediksi dia bakal **diterima** atau **nggak**.")
+    st.write("Input your data below to predict your loan status.")
 
     user_data = user_input_form()
 
     if user_data:
-        result = predict_loan(user_data, model, ordinal_encoders, label_encoders)
-        st.success(f"**Status Pengajuan Pinjaman:** {result}")
+        result = predict_loan(user_data)
+        if result == 1:
+            st.success("YOUR LOAN IS APPROVED")
+        else: 
+            st.error("YOUR LOAN IS REJECTED")
 
 if __name__ == "__main__":
     main()
