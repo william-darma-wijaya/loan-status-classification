@@ -49,8 +49,6 @@ def user_input_form():
 def predict_loan(input_dict):
     df = pd.DataFrame([input_dict])
 
-    df["person_gender"] = df["person_gender"].replace({"male": "Male", "female": "Female", "fe male": "Female"})
-
     df[["person_education", "previous_loan_defaults_on_file"]] = ordinalEncoders.transform(
         df[["person_education", "previous_loan_defaults_on_file"]]
     )
